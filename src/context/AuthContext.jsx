@@ -6,10 +6,14 @@ export const AuthContext = createContext(null);
 // Decode JWT payload (base64) without verifying signature
 function decodeToken(token) {
   try {
-    const base64Payload = token.split('.')[1];
-    const decoded = JSON.parse(atob(base64Payload.replace(/-/g, '+').replace(/_/g, '/')));
+    let base64Payload = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    while (base64Payload.length % 4 !== 0) {
+      base64Payload += '=';
+    }
+    const decoded = JSON.parse(atob(base64Payload));
     return decoded;
-  } catch {
+  } catch (err) {
+    console.error('Failed to decode token:', err);
     return null;
   }
 }
