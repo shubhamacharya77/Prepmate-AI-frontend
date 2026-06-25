@@ -1,0 +1,264 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   DESIGN SYSTEM — PrepMate
+   Inspired by: Perplexity, Raycast, Linear, Remasto
+   ============================================ */
+
+:root {
+  --bg-base: #0A0A0F;
+  --bg-surface: #111118;
+  --bg-surface-2: #1A1A24;
+  --bg-surface-3: #22223A;
+  --primary: #6C63FF;
+  --primary-dark: #5A52E0;
+  --primary-light: #8B84FF;
+  --accent: #00D4FF;
+  --success: #00E5A0;
+  --warning: #FFB347;
+  --danger: #FF5C74;
+  --text-primary: #F0EFFF;
+  --text-secondary: #8B8BA7;
+  --text-muted: #4A4A65;
+  --border: #2A2A3D;
+  --border-light: #3A3A55;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============ SCROLLBAR ============ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--bg-surface-3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* ============ SELECTION ============ */
+::selection {
+  background: rgba(108, 99, 255, 0.3);
+  color: var(--text-primary);
+}
+
+/* ============ GLASSMORPHISM ============ */
+.glass {
+  background: rgba(26, 26, 36, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(42, 42, 61, 0.8);
+}
+
+.glass-strong {
+  background: rgba(17, 17, 24, 0.85);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(42, 42, 61, 0.6);
+}
+
+/* ============ GRADIENT TEXT ============ */
+.gradient-text {
+  background: linear-gradient(135deg, #6C63FF 0%, #00D4FF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-warm {
+  background: linear-gradient(135deg, #FFB347 0%, #FF5C74 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============ ANIMATED GRADIENT MESH ============ */
+.gradient-mesh {
+  background: 
+    radial-gradient(ellipse at 20% 20%, rgba(108, 99, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(108, 99, 255, 0.05) 0%, transparent 70%),
+    var(--bg-base);
+}
+
+/* ============ SKELETON LOADER ============ */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-surface-2) 25%,
+    var(--bg-surface-3) 50%,
+    var(--bg-surface-2) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ============ PROCESSING DOTS ============ */
+.processing-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+  animation: processingDot 1.4s ease-in-out infinite;
+}
+.processing-dot:nth-child(2) { animation-delay: 0.2s; background: var(--accent); }
+.processing-dot:nth-child(3) { animation-delay: 0.4s; background: var(--success); }
+
+@keyframes processingDot {
+  0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+  40% { transform: scale(1.2); opacity: 1; }
+}
+
+/* ============ GLOW EFFECT ============ */
+.glow-primary {
+  box-shadow: 0 0 20px rgba(108, 99, 255, 0.3), 0 0 60px rgba(108, 99, 255, 0.1);
+}
+
+.glow-accent {
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+/* ============ CARD STYLES ============ */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 40px rgba(108, 99, 255, 0.2);
+  border-color: rgba(108, 99, 255, 0.4);
+}
+
+/* ============ BUTTON PRESS ============ */
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* ============ ANIMATED BORDER ============ */
+.animated-border {
+  position: relative;
+  border: 1px solid transparent;
+  background: linear-gradient(var(--bg-surface-2), var(--bg-surface-2)) padding-box,
+              linear-gradient(135deg, #6C63FF, #00D4FF) border-box;
+}
+
+/* ============ TIMELINE ============ */
+.timeline-line {
+  position: absolute;
+  left: 20px;
+  top: 40px;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, #6C63FF 0%, #00D4FF 50%, transparent 100%);
+}
+
+/* ============ ORBIT ANIMATION ============ */
+@keyframes orbit {
+  0% { transform: rotate(0deg) translateX(80px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(80px) rotate(-360deg); }
+}
+
+/* ============ FADE IN VARIANTS ============ */
+.animate-in {
+  animation: fadeSlideUp 0.5s ease forwards;
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============ NOISE TEXTURE OVERLAY ============ */
+.noise-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* ============ INTERVIEW PROGRESS ============ */
+.interview-progress {
+  height: 4px;
+  background: var(--bg-surface-3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.interview-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #6C63FF, #00D4FF);
+  border-radius: 2px;
+  transition: width 0.6s ease;
+}
+
+/* ============ DRAG ZONE ============ */
+.drag-zone {
+  border: 2px dashed var(--border);
+  transition: all 0.2s ease;
+}
+.drag-zone:hover, .drag-zone.drag-active {
+  border-color: var(--primary);
+  background: rgba(108, 99, 255, 0.05);
+}
+
+/* ============ NUMBER STEP ============ */
+.step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6C63FF, #00D4FF);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(108, 99, 255, 0.4);
+}
+
+/* ============ TOAST CUSTOM ============ */
+.toast-success {
+  background: rgba(0, 229, 160, 0.1) !important;
+  border: 1px solid rgba(0, 229, 160, 0.3) !important;
+  color: #00E5A0 !important;
+}
+
+.toast-error {
+  background: rgba(255, 92, 116, 0.1) !important;
+  border: 1px solid rgba(255, 92, 116, 0.3) !important;
+  color: #FF5C74 !important;
+}
