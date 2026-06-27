@@ -14,6 +14,7 @@ export default function ActiveInterview({ interviewId, onBack, onComplete }) {
   // Keep history of Q&A for the chat UI
   const [chatHistory, setChatHistory] = useState([]);
   
+  const [loadingHistory, setLoadingHistory] = useState(!!interviewId);
   const textareaRef = useRef(null);
   const chatContainerRef = useRef(null);
 
@@ -62,7 +63,11 @@ export default function ActiveInterview({ interviewId, onBack, onComplete }) {
       setAnswer('');
       setQuestion(null); // Clear question to show typing state
       
-      await fetchNextQuestion();
+      if (questionNo >= 10) {
+        setIsComplete(true);
+      } else {
+        await fetchNextQuestion();
+      }
     } catch (err) {
       console.error(err);
       toast.error('Failed to submit answer. Please try again.');
@@ -79,12 +84,54 @@ export default function ActiveInterview({ interviewId, onBack, onComplete }) {
     }
   }, [answer]);
 
+  // Fetch chat history on resume
+  useEffect(() => {
+    if (interviewId && !hasStarted) {
+      setLoadingHistory(true);
+      client.get(`/api/interview_details/${interviewId}`)
+        .then(res => {
+          if (res.data && res.data.q_and_a && res.data.q_and_a.length > 0) {
+            const history = res.data.q_and_a.map((qa, idx) => ({
+              qNo: idx + 1,
+              q: qa.question,
+              a: qa.answer
+            }));
+            setChatHistory(history);
+            setHasStarted(true);
+            setQuestionNo(history.length + 1);
+            fetchNextQuestion();
+          }
+        })
+        .catch(err => {
+          console.error("Failed to fetch chat history", err);
+        })
+        .finally(() => {
+          setLoadingHistory(false);
+        });
+    } else {
+      setLoadingHistory(false);
+    }
+  }, [interviewId, hasStarted]);
+
   // Scroll to bottom when new question/answer appears
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   }, [chatHistory, question, loading]);
+
+  if (loadingHistory) {
+    return (
+      <div className="bg-bg-surface border border-border rounded-3xl min-h-[500px] flex flex-col items-center justify-center animate-in fade-in duration-500">
+        <div className="flex gap-2 mb-4">
+           <span className="w-3 h-3 rounded-full bg-primary animate-bounce"></span>
+           <span className="w-3 h-3 rounded-full bg-accent animate-bounce" style={{ animationDelay: '0.15s' }}></span>
+           <span className="w-3 h-3 rounded-full bg-success animate-bounce" style={{ animationDelay: '0.3s' }}></span>
+        </div>
+        <p className="text-text-secondary font-medium">Loading interview data...</p>
+      </div>
+    );
+  }
 
   // Instructions screen
   if (!hasStarted) {

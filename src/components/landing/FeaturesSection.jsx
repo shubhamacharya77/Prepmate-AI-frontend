@@ -26,7 +26,7 @@ const features = [
     glow: 'hover:border-success/40',
   },
   {
-    icon: '🎙️',
+    icon: '🤝',
     title: 'Interview Preparation',
     description: 'Practice with AI-generated questions tailored to your topic and difficulty. Structured Q&A flow for real interview simulation.',
     color: 'from-warning to-danger',

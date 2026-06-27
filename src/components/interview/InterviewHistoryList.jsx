@@ -2,24 +2,7 @@ import { useState, useEffect } from 'react';
 import client from '../../api/client';
 import toast from 'react-hot-toast';
 
-const DEMO_DATA = [
-  {
-    id: 'demo-1',
-    title: 'React Frontend Developer',
-    difficulty_level: 'Medium',
-    interviews_type: 'Technical',
-    status: 'Complete',
-    created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
-  },
-  {
-    id: 'demo-2',
-    title: 'Behavioral Team Fit',
-    difficulty_level: 'Easy',
-    interviews_type: 'Hr',
-    status: 'Complete',
-    created_at: new Date(Date.now() - 86400000 * 5).toISOString(),
-  }
-];
+
 
 export default function InterviewHistoryList({ onCreateNew, onResume, onViewReport }) {
   const [interviews, setInterviews] = useState([]);
@@ -28,18 +11,13 @@ export default function InterviewHistoryList({ onCreateNew, onResume, onViewRepo
   useEffect(() => {
     client.get('/api/get_interviews')
       .then(res => {
-        const history = res.data.history || [];
-        if (history.length === 0) {
-          // Use demo data if empty
-          setInterviews(DEMO_DATA);
-        } else {
-          setInterviews(history);
-        }
+        const history = res.data?.history || [];
+        setInterviews(history);
       })
       .catch(err => {
         console.error(err);
         toast.error("Failed to fetch interview history");
-        setInterviews(DEMO_DATA);
+        setInterviews([]);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -83,7 +61,7 @@ export default function InterviewHistoryList({ onCreateNew, onResume, onViewRepo
             <p className="text-text-secondary text-xs">Please complete it before starting a new one.</p>
           </div>
           <button 
-             onClick={() => onResume(interviews.find(i => i.status === 'Start').id)}
+             onClick={() => onResume(interviews.find(i => i.status === 'Start')?.id)}
              className="px-5 py-2.5 bg-warning/20 text-warning text-sm font-bold rounded-xl hover:bg-warning/30 transition-colors btn-press"
           >
             Resume →

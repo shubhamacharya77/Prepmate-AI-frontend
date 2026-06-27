@@ -60,9 +60,14 @@ export default function FinalCTASection() {
           </div>
           <span className="font-bold text-text-primary text-sm">PrepMate</span>
         </div>
-        <p className="text-text-muted text-sm">
-          © {new Date().getFullYear()} PrepMate. AI-Powered Career Copilot.
-        </p>
+        <div className="text-center md:text-left">
+          <p className="text-text-secondary text-sm font-medium">
+            If it works, <span className="text-primary font-bold">Shubham Acharya</span> built it. If it breaks... it's a feature 🐛✨
+          </p>
+          <p className="text-xs text-text-muted mt-1">
+            © {new Date().getFullYear()} PrepMate • Powered by <span className="gradient-text font-bold uppercase tracking-wider">minimal antigravity</span> 🛸
+          </p>
+        </div>
         <div className="flex gap-6">
           <a href="#features" className="text-text-muted text-sm hover:text-text-secondary transition-colors">Features</a>
           <a href="#how-it-works" className="text-text-muted text-sm hover:text-text-secondary transition-colors">How it Works</a>

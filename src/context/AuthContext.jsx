@@ -39,7 +39,7 @@ export function AuthProvider({ children }) {
   const syncUserStatus = async () => {
     try {
       const res = await client.get('/api/user_status');
-      
+
       setUserStats({
         total_interviews: res.data.total_interviews || 0,
         has_roadmap: res.data.has_roadmap || false
@@ -54,6 +54,8 @@ export function AuthProvider({ children }) {
       }
     } catch (err) {
       console.error('Failed to sync user status', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -88,6 +90,7 @@ export function AuthProvider({ children }) {
       localStorage.setItem('prepmate_user', JSON.stringify(userInfo));
       setToken(newToken);
       setUser(userInfo);
+      setLoading(true); // Ensure loading is instantly true until syncUserStatus finishes
       // We don't need to manually call syncUserStatus here because setting the token 
       // will trigger the useEffect above which calls syncUserStatus()
     }

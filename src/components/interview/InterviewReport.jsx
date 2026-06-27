@@ -2,33 +2,7 @@ import { useState, useEffect } from 'react';
 import client from '../../api/client';
 import toast from 'react-hot-toast';
 
-const DEMO_REPORT = {
-  interview: {
-    title: "Senior Frontend Engineer Mock",
-    difficulty_level: "Hard",
-    interviews_type: "Technical",
-    status: "Complete",
-    created_at: new Date().toISOString()
-  },
-  q_and_a: [
-    {
-      id: 1,
-      question: "Can you explain how React's Virtual DOM works under the hood?",
-      answer: "The Virtual DOM is a lightweight copy of the actual DOM. When state changes, React creates a new Virtual DOM and compares it with the previous one using a diffing algorithm. It then batches the updates and only patches the real DOM where necessary, which improves performance.",
-    },
-    {
-      id: 2,
-      question: "How would you handle global state in a large-scale React application?",
-      answer: "I would use a state management library like Redux Toolkit or Zustand for complex, frequently changing state. For more static data or deeply nested props, React Context API is sufficient. I also like using React Query for server-side state caching.",
-    }
-  ],
-  report: {
-    final_score: 88,
-    strengths: "Excellent understanding of React fundamentals.\nClear and concise explanations.\nGood knowledge of modern state management ecosystems.",
-    weaknesses: "Could have provided more detail on the specific diffing heuristic (e.g., assuming elements of different types produce different trees).",
-    final_feedback: "You demonstrated strong senior-level frontend knowledge. Your communication is excellent. To reach the next level, try to dive deeper into the low-level implementation details when answering architecture questions."
-  }
-};
+
 
 export default function InterviewReport({ interviewId, onBack }) {
   const [data, setData] = useState(null);
@@ -39,15 +13,16 @@ export default function InterviewReport({ interviewId, onBack }) {
       .then(res => {
         // If there's no report yet or it failed to fetch proper data
         if (!res.data || !res.data.report) {
-          setData(DEMO_REPORT);
+          toast.error("Failed to load interview report");
+          setData(null);
         } else {
           setData(res.data);
         }
       })
       .catch(err => {
         console.error("Failed to fetch report", err);
-        toast.error("Using demo data: Failed to fetch report from server");
-        setData(DEMO_REPORT);
+        toast.error("Failed to fetch report from server");
+        setData(null);
       })
       .finally(() => setLoading(false));
   }, [interviewId]);
@@ -61,6 +36,17 @@ export default function InterviewReport({ interviewId, onBack }) {
           <span className="w-3 h-3 rounded-full bg-primary/50 animate-bounce" style={{ animationDelay: '0.2s' }} />
         </div>
         <p className="text-text-muted">Loading your AI report...</p>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="flex flex-col items-center justify-center p-20 animate-in fade-in">
+        <p className="text-text-muted mb-4">Report not found or failed to load.</p>
+        <button onClick={onBack} className="px-6 py-2 bg-primary/10 text-primary hover:bg-primary/20 rounded-xl font-medium transition-colors">
+          Back to Dashboard
+        </button>
       </div>
     );
   }
@@ -121,7 +107,7 @@ export default function InterviewReport({ interviewId, onBack }) {
             <div className="absolute top-0 right-0 p-4 opacity-20 text-4xl">💪</div>
             <h3 className="text-lg font-bold text-success mb-4 relative z-10">Strengths</h3>
             <ul className="space-y-3 relative z-10">
-              {report.strengths.split('\n').filter(s => s.trim()).map((strength, idx) => (
+              {String(report.strengths ?? '').split('\n').filter(s => s.trim()).map((strength, idx) => (
                 <li key={idx} className="flex gap-3 text-sm text-text-secondary leading-relaxed">
                   <span className="text-success mt-0.5">✓</span>
                   <span>{strength.replace(/^- /, '')}</span>
@@ -134,7 +120,7 @@ export default function InterviewReport({ interviewId, onBack }) {
             <div className="absolute top-0 right-0 p-4 opacity-20 text-4xl">🎯</div>
             <h3 className="text-lg font-bold text-warning mb-4 relative z-10">Areas to Improve</h3>
             <ul className="space-y-3 relative z-10">
-              {report.weaknesses.split('\n').filter(s => s.trim()).map((weakness, idx) => (
+              {String(report.weaknesses ?? '').split('\n').filter(s => s.trim()).map((weakness, idx) => (
                 <li key={idx} className="flex gap-3 text-sm text-text-secondary leading-relaxed">
                   <span className="text-warning mt-0.5">→</span>
                   <span>{weakness.replace(/^- /, '')}</span>
@@ -150,7 +136,7 @@ export default function InterviewReport({ interviewId, onBack }) {
             <span>💬</span> Interview Transcript
           </h3>
           <div className="space-y-6">
-            {q_and_a.map((qa, index) => (
+            {(q_and_a || []).map((qa, index) => (
               <div key={qa.id || index} className="bg-bg-surface-2 rounded-2xl p-6 border border-border">
                 {/* Question Bubble */}
                 <div className="mb-6 pl-4 border-l-4 border-primary">

@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useRequireAuth } from '../hooks/useAuth';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import OnboardingModal from '../components/onboarding/OnboardingModal';
+import Spinner from '../components/ui/Spinner';
 import client from '../api/client';
 
 const services = [
@@ -47,10 +48,18 @@ const services = [
 
 export default function DashboardPage() {
   const isAuth = useRequireAuth();
-  const { user, hasResume, userStats } = useAuth();
+  const { user, hasResume, userStats, loading } = useAuth();
   const navigate = useNavigate();
   const [showOnboarding, setShowOnboarding] = useState(!hasResume);
-  
+
+  useEffect(() => {
+    if (hasResume) {
+      setShowOnboarding(false);
+    } else if (!loading) {
+      setShowOnboarding(true);
+    }
+  }, [hasResume, loading]);
+
   const [analysis, setAnalysis] = useState(null);
   const [loadingAnalysis, setLoadingAnalysis] = useState(false);
 
@@ -69,6 +78,28 @@ export default function DashboardPage() {
   }, [hasResume]);
 
   if (!isAuth) return null;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-bg-base gradient-mesh flex items-center justify-center p-4">
+        <div className="bg-bg-surface-2/80 backdrop-blur-xl border border-border rounded-3xl p-10 flex flex-col items-center shadow-2xl animate-in max-w-sm w-full">
+          <div className="relative w-20 h-20 mb-6 flex items-center justify-center">
+            <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse"></div>
+            <Spinner size="lg" className="relative z-10" />
+          </div>
+          <h2 className="text-xl font-bold text-text-primary mb-2">Syncing Profile</h2>
+          <div className="flex items-center justify-center gap-2">
+            <span className="text-sm font-medium text-text-secondary">Preparing your dashboard</span>
+            <div className="flex gap-1 ml-1 mt-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-accent animate-bounce" style={{ animationDelay: '0.15s' }}></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-success animate-bounce" style={{ animationDelay: '0.3s' }}></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const handleOnboardingComplete = () => {
     setShowOnboarding(false);
@@ -153,7 +184,7 @@ export default function DashboardPage() {
                       <p className="text-text-secondary text-sm leading-relaxed">{analysis.summary}</p>
                     </div>
                   )}
-                  
+
                   {analysis.skills && analysis.skills.length > 0 && (
                     <div>
                       <h3 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Core Skills</h3>
